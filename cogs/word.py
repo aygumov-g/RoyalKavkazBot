@@ -7,3 +7,4 @@ async def ending(words, tp):
 		return words_list[1]
 	else:
 		return words_list[2]
+ 
