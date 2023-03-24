@@ -31,6 +31,8 @@ async def main(message):
 			
 			if len(collection.roulette_db[message.chat.id]["rates"]) >= max_len_rates:
 				await message.reply("🚫 Введи \"<code>!крутить</code>\", в рулетке уже сделано максимальное число ставок", parse_mode="HTML")
+			elif int(rate[0]) <= 0:
+				await message.reply("🚫 Такие ставки не принимаются")
 			elif int(user_object["b"]) >= rate[0]:
 				await message.reply("✅ Ставка принята")
 				

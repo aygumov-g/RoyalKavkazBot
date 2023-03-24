@@ -45,12 +45,15 @@ async def main(message, message_text, numeration_command):
 	
 	if usage[0] == 1:
 		if message.chat.id in collection.roulette_db:
-			output = await add_money_winner(message)
+			if message.from_user.id in [int(rates[0]) for rates in collection.roulette_db[message.chat.id]["rates"]]:
+				output = await add_money_winner(message)
 			
-			del collection.roulette_db[message.chat.id]
+				del collection.roulette_db[message.chat.id]
+			else:
+				output = "🚫 Сделай ставку, потом крути"
 		else:
 			output = "🚫 Рулетка не запущена в этом чате"
-		
+
 		await message.reply(output if output != "" else "👏🏿 Никто не выйграл", parse_mode="HTML", disable_web_page_preview=True)
 	else:
 		await error.send_errors(message, usage)

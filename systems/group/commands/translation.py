@@ -27,7 +27,9 @@ async def main(message, message_text, numeration_command):
 		else:
 			user_object_reply = await user.get_object_user(message.reply_to_message.from_user.id)
 		user_object = await user.get_object_user(message.from_user.id)
-
+		
+		if int(usage[1]["args"][0]) <= 0:
+			await message.reply("🚫 Такие переводы не принимаются")
 		if int(user_object["b"]) >= int(usage[1]["args"][0]):
 			if int(user_object["trans"][0]) < limit_trans_money_in_day:
 				await message.reply("✅ Пользователю успешно начислены монеты")
