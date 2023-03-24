@@ -3,7 +3,7 @@ import config
 from systems.group import handler_rates
 
 from systems.group.commands import (
-	balance, translation, roulette, twist, log
+	balance, translation, roulette, twist, log, add
 )
 
 
@@ -18,6 +18,17 @@ async def usage_command(message, message_text, numeration_command):
 		await twist.main(message, message_text, numeration_command)
 	elif numeration_command == 5:
 		await log.main(message, message_text, numeration_command)
+	elif numeration_command == 6:
+		await add.main(message, message_text, numeration_command)
+
+
+async def check_call_usage_command(message, numeration_command):
+	output = True
+
+	if "call" in config.COMMANDS[numeration_command] and not message.from_user.id in config.COMMANDS[numeration_command]["call"]:
+		output = False
+	
+	return output
 
 
 async def check_command_in_message_text(command, message_text):
@@ -63,8 +74,8 @@ async def check_usage_command(message):
 				check_command_in_message_text_output = await check_command_in_message_text(
 					commandSynonyms, message_text
 				)
-	
-				if check_command_in_message_text_output[1] == commandSynonyms:
+
+				if check_command_in_message_text_output[1] == commandSynonyms and await check_call_usage_command(message, numerationCommands):
 					await usage_command(
 						message, check_command_in_message_text_output[0], numerationCommands
 					);return
