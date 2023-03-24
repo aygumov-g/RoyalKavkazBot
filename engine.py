@@ -3,7 +3,7 @@ import config
 from systems.group import handler_rates
 
 from systems.group.commands import (
-	balance, translation, roulette, twist
+	balance, translation, roulette, twist, log
 )
 
 
@@ -16,6 +16,8 @@ async def usage_command(message, message_text, numeration_command):
 		await roulette.main(message, message_text, numeration_command)
 	elif numeration_command == 4:
 		await twist.main(message, message_text, numeration_command)
+	elif numeration_command == 5:
+		await log.main(message, message_text, numeration_command)
 
 
 async def check_command_in_message_text(command, message_text):

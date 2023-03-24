@@ -25,6 +25,14 @@ async def unload_roulette_db():
 		await main.db1.roulette.insert_many(list_unload)
 
 
+async def unload_log_db():
+	if len(collection.log_db) != 0:
+		list_unload = [{"id": i, **collection.log_db[i]} for i in collection.log_db]
+
+		await main.db1.log.delete_many({})
+		await main.db1.log.insert_many(list_unload)
+
+
 async def on_unloader(reload=None):
 	global SAVE_DB_TIME
 	
@@ -33,7 +41,8 @@ async def on_unloader(reload=None):
 		
 		tasks = [
 			asyncio.create_task(unload_users_db()),
-			asyncio.create_task(unload_roulette_db())
+			asyncio.create_task(unload_roulette_db()),
+			asyncio.create_task(unload_log_db())
 		]
 		
 		for task in tasks:

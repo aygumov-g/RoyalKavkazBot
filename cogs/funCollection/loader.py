@@ -15,10 +15,16 @@ async def load_roulette_db():
 		collection.roulette_db[rouletteCollection["id"]] = rouletteCollection
 
 
+async def load_log_db():
+	for logCollection in await main.db1.log.find({}).to_list(None):
+		collection.log_db[logCollection["id"]] = logCollection
+
+
 async def on_loader():
 	tasks = [
 		asyncio.create_task(load_users_db()),
-		asyncio.create_task(load_roulette_db())
+		asyncio.create_task(load_roulette_db()),
+		asyncio.create_task(load_log_db())
 	]
 
 	for task in tasks:

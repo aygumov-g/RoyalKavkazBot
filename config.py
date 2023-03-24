@@ -9,7 +9,8 @@ COMMANDS = {
 	1: dict(usage=["баланс", "б"]),
 	2: dict(usage=["+"]),
 	3: dict(usage=["рулетка", "рул"]),
-	4: dict(usage=["крутить", "спин", "^го"])
+	4: dict(usage=["крутить", "спин", "^го"]),
+	5: dict(usage=["лог"])
 }
 
 CHANNEL_NEWS = "@RoyalKavkazNews"

@@ -6,8 +6,7 @@ import datetime
 async def main(message, message_text, numeration_command):
 	usage = await error.check_errors(message, message_text, {
 		"block_arguments": True,
-		"commands": numeration_command,
-		"bot_me": False
+		"commands": numeration_command
 	})
 
 	if usage[0] == 1:

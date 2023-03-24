@@ -24,6 +24,8 @@ async def check_error_commands_not_usage_in_bot(key):
 			return 0
 	except AttributeError:
 		pass
+	except KeyError:
+		pass
 
 
 async def check_error_user_not_in_base(key):

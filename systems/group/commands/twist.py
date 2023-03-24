@@ -1,3 +1,5 @@
+import datetime
+
 from cogs import error, user, slicer, collection
 
 from cogs import numberDecoder
@@ -5,6 +7,23 @@ from cogs import numberDecoder
 from systems.group import handler_rates
 
 import random
+
+
+max_logs_elem = 20
+
+
+async def add_log(message, ball):
+	if not message.chat.id in collection.log_db:
+		collection.log_db[message.chat.id] = {
+			"id": message.chat.id,
+			"uptime": "",
+			"logs": []
+		}
+	elif len(collection.log_db[message.chat.id]["logs"]) >= max_logs_elem:
+		del collection.log_db[message.chat.id]["logs"][0]
+	
+	collection.log_db[message.chat.id]["logs"].append(str(ball))
+	collection.log_db[message.chat.id]["uptime"] = str(datetime.datetime.now())
 
 
 async def add_money_winner(message):
@@ -32,6 +51,8 @@ async def add_money_winner(message):
 			)
 
 			user_object["b"] = str(int(user_object["b"]) + checker[1])
+
+		await add_log(message, ball)
 	
 	return output_message
 
@@ -39,8 +60,7 @@ async def add_money_winner(message):
 async def main(message, message_text, numeration_command):
 	usage = await error.check_errors(message, message_text, {
 		"block_arguments": True,
-		"commands": numeration_command,
-		"bot_me": False
+		"commands": numeration_command
 	})
 	
 	if usage[0] == 1:
