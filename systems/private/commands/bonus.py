@@ -2,6 +2,8 @@ import datetime
 
 from main import bot
 
+from systems.private import buttons
+
 from cogs import user
 
 from cogs import timeDecoder
@@ -34,4 +36,4 @@ async def send(message):
 	else:
 		output = "🛑 У тебя и так достаточно монет. Лучше возвращайся когда они закончаться"
 
-	await message.reply(output, parse_mode="HTML", disable_web_page_preview=True)
+	await message.reply(output, parse_mode="HTML", disable_web_page_preview=True, reply_markup=buttons.main)

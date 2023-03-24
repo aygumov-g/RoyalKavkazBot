@@ -1,3 +1,5 @@
+from systems.private import buttons
+
 from cogs import user
 
 from cogs import numberDecoder
@@ -10,4 +12,4 @@ async def send(message):
 		await numberDecoder.space_decoder(user_object["b"])
 	)
 	
-	await message.reply(output, parse_mode="HTML", disable_web_page_preview=True)
+	await message.reply(output, parse_mode="HTML", disable_web_page_preview=True, reply_markup=buttons.main)

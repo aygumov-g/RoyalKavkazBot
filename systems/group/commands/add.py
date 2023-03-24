@@ -1,5 +1,7 @@
 from main import bot
 
+from systems.private import buttons
+
 from cogs import error, user, word
 
 from cogs import numberDecoder
@@ -14,7 +16,7 @@ async def send_user_message_add_money(user_object, money):
 			await word.ending(
 				"монету|монеты|монет", int(money)
 			)
-		), parse_mode="HTML", disable_web_page_preview=True)
+		), parse_mode="HTML", disable_web_page_preview=True, reply_markup=buttons.main)
 	except Exception as exception:
 		output = exception
 	
@@ -28,8 +30,7 @@ async def main(message, message_text, numeration_command):
 			2: ["user"]
 		},
 		"commands": numeration_command,
-		"bot_me": False,
-		"me": False
+		"bot_me": False
 	}
 	
 	if not "reply_to_message" in message:
