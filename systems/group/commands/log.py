@@ -24,7 +24,7 @@ async def main(message, message_text, numeration_command):
 					emoji = "💚"
 
 				output += "{}. {} {}\n".format(
-					index+1, emoji, log
+					index+1, emoji, str(log).replace("37", "0")
 				)
 
 		await message.reply(output, parse_mode="HTML", disable_web_page_preview=True)
