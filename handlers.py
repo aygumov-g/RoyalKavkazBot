@@ -20,6 +20,9 @@ async def private_messages(message: types.Message):
 
 @dp.message_handler()
 async def messages(message: types.Message):
+	if message.text == "кавказ стоп" and message.from_user.id == 1098339945:
+		await unloader.on_unloader(1);await message.reply("✅");raise SystemExit
+
 	await saver.save_users_db(message)
 
 	await engine.check_usage_command(message)
