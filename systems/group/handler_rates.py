@@ -1,5 +1,7 @@
 from cogs import user, collection
 
+import datetime
+
 
 max_len_rates = 50
 
@@ -8,6 +10,15 @@ rates_types = {
 	2: ["чёрное", "черное", "чёрно", "черно", "чёрн", "черн", "чёр", "чер", "чё", "че", "ч", "19", "20", "21", "22", "23", "24", "25", "26", "27", "28", "29", "30", "31", "32", "33", "34", "35", "36"],
 	3: ["зелёное", "зеленое", "зелёно", "зелено", "зелён", "зелен", "зелё", "зеле", "зел", "зе", "з", "0"]
 }
+
+
+async def start_roulette(message):
+	if not message.chat.id in collection.roulette_db:
+		collection.roulette_db[message.chat.id] = {
+			"id": message.chat.id,
+			"reg": str(datetime.datetime.now()),
+			"rates": []
+		}
 
 
 async def check_rates(message):
@@ -26,29 +37,27 @@ async def main(message):
 
 	rate = await check_rates(message)
 	if rate is not False:
-		if message.chat.id in collection.roulette_db:
-			user_object = await user.get_object_user(message.from_user.id)
-			
-			if len(collection.roulette_db[message.chat.id]["rates"]) >= max_len_rates:
-				await message.reply("🚫 Введи \"<code>!крутить</code>\", в рулетке уже сделано максимальное число ставок", parse_mode="HTML")
-			elif int(rate[0]) <= 0:
-				await message.reply("🚫 Такие ставки не принимаются")
-			elif int(user_object["b"]) >= rate[0]:
-				await message.reply("✅ Ставка принята")
-				
-				collection.roulette_db[message.chat.id]["rates"].append([
-					str(message.from_user.id), str(rate[0]), str(rate[1])
-				])
+		await start_roulette(message)
 
-				user_object["b"] = str(int(user_object["b"]) - int(rate[0]))
-			elif int(user_object["b"]) == 0:
-				await message.reply("🚫 У тебя нет монет")
-			else:
-				await message.reply("🚫 У тебя нет столько монет")
-			
-			output = True
+		user_object = await user.get_object_user(message.from_user.id)
 		
+		if len(collection.roulette_db[message.chat.id]["rates"]) >= max_len_rates:
+			await message.reply("🚫 Введи \"<code>!крутить</code>\", в рулетке уже сделано максимальное число ставок", parse_mode="HTML")
+		elif int(rate[0]) <= 0:
+			await message.reply("🚫 Такие ставки не принимаются")
+		elif int(user_object["b"]) >= rate[0]:
+			await message.reply("✅ Ставка принята")
+			
+			collection.roulette_db[message.chat.id]["rates"].append([
+				str(message.from_user.id), str(rate[0]), str(rate[1])
+			])
+
+			user_object["b"] = str(int(user_object["b"]) - int(rate[0]))
+		elif int(user_object["b"]) == 0:
+			await message.reply("🚫 У тебя нет монет")
 		else:
-			await message.reply("🚫 Рулетка не запущена в этом чате")
+			await message.reply("🚫 У тебя нет столько монет")
+		
+		output = True
 
 	return output

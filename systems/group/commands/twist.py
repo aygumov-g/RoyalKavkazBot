@@ -6,6 +6,8 @@ from cogs import numberDecoder
 
 from systems.group import handler_rates
 
+from systems.group.commands.log import get_log
+
 import random
 
 
@@ -19,6 +21,7 @@ async def add_log(message, ball):
 			"uptime": "",
 			"logs": []
 		}
+
 	elif len(collection.log_db[message.chat.id]["logs"]) >= max_logs_elem:
 		del collection.log_db[message.chat.id]["logs"][0]
 	
@@ -27,10 +30,14 @@ async def add_log(message, ball):
 
 
 async def add_money_winner(message):
-	output_message = ""
+	ball = random.randint(1, 37)
 
+	output_message = "Рулетка: {} {}".format(
+		await get_log(ball), ball
+	)
+	
 	for rates in collection.roulette_db[message.chat.id]["rates"]:
-		checker, ball = 0, random.randint(1, 37)
+		checker = 0
 
 		if rates[2] in handler_rates.rates_types[1] and ball in range(1, 19):
 			checker = [rates[0], int(rates[1]) * 2]
@@ -38,21 +45,21 @@ async def add_money_winner(message):
 			checker = [rates[0], int(rates[1]) * 2]
 		elif rates[2] in handler_rates.rates_types[3] and ball == 37:
 			checker = [rates[0], int(rates[1]) * len(collection.roulette_db[message.chat.id]["rates"])]
-
+		
 		if checker != 0 and int(checker[0]) in collection.users_db:
 			user_object = await user.get_object_user(int(checker[0]))
 
-			output_message += "<code>+</code> <a href=\"{}\">{}</a> <code>></code> {} \n".format(
+			output_message += "\n<code>+</code> <a href=\"{}\">{}</a> <code>></code> {}".format(
 				await user.get_link_user(user_object["username"], user_object["id"]),
 				await slicer.slicer(
 					await user.get_name_user(user_object["first_name"], user_object["username"], user_object["id"]), 13
 				),
 				await numberDecoder.space_decoder(checker[1])
 			)
-
+			
 			user_object["b"] = str(int(user_object["b"]) + checker[1])
-
-		await add_log(message, ball)
+	
+	await add_log(message, ball)
 	
 	return output_message
 
@@ -72,8 +79,8 @@ async def main(message, message_text, numeration_command):
 			else:
 				output = "🚫 Сделай ставку, потом крути"
 		else:
-			output = "🚫 Рулетка не запущена в этом чате"
+			output = "🚫 Нету ставок чтобы крутить"
 
-		await message.reply(output if output != "" else "👏🏿 Никто не выйграл", parse_mode="HTML", disable_web_page_preview=True)
+		await message.reply(output, parse_mode="HTML", disable_web_page_preview=True)
 	else:
 		await error.send_errors(message, usage)
