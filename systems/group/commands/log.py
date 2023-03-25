@@ -1,12 +1,14 @@
 from cogs import error, collection
 
+from systems.group.handler_rates import rates_types_int
+
 
 async def get_log(log_int):
 	emoji = "💚"
 
-	if int(log_int) in range(1, 19):
+	if int(log_int) in rates_types_int[1]:
 		emoji = "🔴"
-	elif int(log_int) in range(19, 37):
+	elif int(log_int) in rates_types_int[2]:
 		emoji = "⚫️"
 	
 	return emoji

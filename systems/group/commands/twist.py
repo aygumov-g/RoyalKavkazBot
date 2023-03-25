@@ -7,6 +7,7 @@ from cogs import numberDecoder
 from systems.group import handler_rates
 
 from systems.group.commands.log import get_log
+from systems.group.handler_rates import rates_types_int
 
 import random
 
@@ -39,11 +40,11 @@ async def add_money_winner(message):
 	for rates in collection.roulette_db[message.chat.id]["rates"]:
 		checker = 0
 
-		if rates[2] in handler_rates.rates_types[1] and ball in range(1, 19):
+		if rates[2] in handler_rates.rates_types[1] and int(ball) in rates_types_int[1]:
 			checker = [rates[0], int(rates[1]) * 2]
-		elif rates[2] in handler_rates.rates_types[2] and ball in range(19, 37):
+		elif rates[2] in handler_rates.rates_types[2] and int(ball) in rates_types_int[2]:
 			checker = [rates[0], int(rates[1]) * 2]
-		elif rates[2] in handler_rates.rates_types[3] and ball == 37:
+		elif rates[2] in handler_rates.rates_types[3] and int(ball) in rates_types_int[3]:
 			checker = [rates[0], int(rates[1]) * len(collection.roulette_db[message.chat.id]["rates"])]
 		
 		if checker != 0 and int(checker[0]) in collection.users_db:
