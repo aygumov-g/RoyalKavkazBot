@@ -15,7 +15,7 @@ async def main(message, message_text, numeration_command):
 		if message.chat.id in collection.log_db and len(collection.log_db[message.chat.id]["logs"]) != 0:
 			output = ""
 			
-			for index, log in enumerate(collection.log_db[message.chat.id]["logs"]):
+			for log in reversed(collection.log_db[message.chat.id]["logs"]):
 				if int(log) in range(1, 19):
 					emoji = "🔴"
 				elif int(log) in range(19, 37):
@@ -23,8 +23,8 @@ async def main(message, message_text, numeration_command):
 				else:
 					emoji = "💚"
 
-				output += "{}. {} {}\n".format(
-					index+1, emoji, str(log).replace("37", "0")
+				output += "{} {}\n".format(
+					emoji, str(log).replace("37", "0")
 				)
 
 		await message.reply(output, parse_mode="HTML", disable_web_page_preview=True)
