@@ -14,6 +14,7 @@ dp = Dispatcher(bot)
 
 db1 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD1).Royal
 db2 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).main
+db2Backup = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).mainBackup
 
 
 async def on_startup(dp):

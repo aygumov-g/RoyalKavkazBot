@@ -9,6 +9,10 @@ async def load_users_db():
 	for userCollection in await main.db2.users.find({}).to_list(None):
 		collection.users_db[userCollection["id"]] = userCollection
 
+	if len(collection.users_db) == 0:
+		for userCollection in await main.db2Backup.users.find({}).to_list(None):
+			collection.users_db[userCollection["id"]] = userCollection
+
 
 async def load_roulette_db():
 	for rouletteCollection in await main.db1.roulette.find({}).to_list(None):

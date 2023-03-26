@@ -16,6 +16,9 @@ async def unload_users_db():
 		await main.db2.users.delete_many({})
 		await main.db2.users.insert_many(list_unload)
 
+		await main.db2Backup.users.delete_many({})
+		await main.db2Backup.users.insert_many(list_unload)
+
 
 async def unload_roulette_db():
 	if len(collection.roulette_db) != 0:

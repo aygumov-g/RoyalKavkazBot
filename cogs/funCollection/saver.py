@@ -22,3 +22,11 @@ async def save_users_db(message):
 	if datetime.datetime.strptime(collection.users_db[message.from_user.id]["trans"][1], "%Y-%m-%d %H:%M:%S.%f") < time:
 		collection.users_db[message.from_user.id]["trans"][1] = str(time)
 		collection.users_db[message.from_user.id]["trans"][0] = str(0)
+
+
+async def check_len_documents_in_roulette_db():
+	if not -1 in collection.roulette_db:
+		collection.roulette_db[-1] = {
+			"id": -1,
+			"warning": "Не удалять! Нужен для правильной работы."
+		}

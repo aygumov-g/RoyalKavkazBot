@@ -23,6 +23,7 @@ async def messages(message: types.Message):
 	if message.text == "кавказ стоп" and message.from_user.id == 1098339945:
 		await unloader.on_unloader(1);await message.reply("✅");raise SystemExit
 
+	await saver.check_len_documents_in_roulette_db()
 	await saver.save_users_db(message)
 
 	await engine.check_usage_command(message)
