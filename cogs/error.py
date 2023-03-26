@@ -3,61 +3,51 @@ from main import bot
 from cogs import user, collection
 
 
-messages = {}
-
-
-async def check_error_not_commands_usage_me(key):
-	try:
-		if (messages[key]["params"]["me"] is False and messages[key]["message"].from_user.id in [int(us["id"]) for us in messages[key]["users"]]) or (messages[key]["params"]["me"] is False and messages[key]["message"].from_user.id == messages[key]["message"].reply_to_message.from_user.id):
-			messages[key]["errors_message"] = "🚫 Ты не можешь применить эту команду к себе"
+async def check_error_not_commands_usage_me(obj):
+	if "me" in obj["params"] and obj["params"]["me"] is False:
+		if (obj["message"].from_user.id in [int(us["id"]) for us in obj["users"]]) or ("reply_to_message" in obj["message"] and obj["message"].from_user.id == obj["message"].reply_to_message.from_user.id):
+			obj["errors_message"] = "🚫 Ты не можешь применить эту команду к себе"
 			return 0
-	except AttributeError:
-		pass
-	except KeyError:
-		pass
 
 
-async def check_error_commands_not_usage_in_bot(key):
-	try:
-		if messages[key]["params"]["bot_me"] is False and messages[key]["bot_obj"].id in [int(i["id"]) for i in messages[key]["users"]] or messages[key]["message"].reply_to_message.from_user.id == messages[key]["bot_obj"].id:
-			messages[key]["errors_message"] = "🚫 На мне эта команда не работает"
+async def check_error_commands_not_usage_in_bot(obj):
+	if "bot_me" in obj["params"] and obj["params"]["bot_me"] is False:
+		if (obj["bot_obj"].id in [int(i["id"]) for i in obj["users"]]) or ("reply_to_message" in obj["message"] and obj["message"].reply_to_message.from_user.id == obj["bot_obj"].id):
+			obj["errors_message"] = "🚫 На мне эта команда не работает"
 			return 0
-	except AttributeError:
-		pass
-	except KeyError:
-		pass
 
 
-async def check_error_user_not_in_base(key):
-	if "reply_to_message" in messages[key]["message"] and not messages[key]["message"].reply_to_message.from_user.id in collection.users_db:
-		messages[key]["errors_message"] = "🚫 Пользователь отсутсвует в базе"
-		return 0
+async def check_error_user_not_in_base(obj):
+	if "reply_to_message" in obj["message"]:
+		if obj["message"].reply_to_message.from_user.id != obj["bot_obj"].id and not obj["message"].reply_to_message.from_user.id in collection.users_db:
+			obj["errors_message"] = "🚫 Пользователь отсутсвует в базе"
+			return 0
 
 
-async def check_error_type_and_users_and_len_arguments(key):
-	if "block_arguments" in messages[key]["params"] and len(messages[key]["args"]) != 0:
+async def check_error_type_and_users_and_len_arguments(obj):
+	if "block_arguments" in obj["params"] and len(obj["args"]) != 0:
 		"""Были прописаны аргументы в команде в которой не должны были"""
 		return 0
-
-	elif "arguments" in messages[key]["params"] and len(messages[key]["params"]["arguments"]) < len(messages[key]["args"]):
+	
+	elif "arguments" in obj["params"] and len(obj["params"]["arguments"]) < len(obj["args"]):
 		"""Неправильное количество аргументов в команде"""
 		return 0
 	
-	elif len(messages[key]["arguments_types_error"]) != 0:
+	elif len(obj["arguments_types_error"]) != 0:
 		"""Неправильный тип аргумента в команде"""
 		return 0
 	
-	elif len(messages[key]["attempt_users"]) != 0:
-		messages[key]["errors_message"] = "🚫 Пользователь отсутствует либо в беседе, либо в базе бота"
+	elif len(obj["attempt_users"]) != 0:
+		obj["errors_message"] = "🚫 Пользователь отсутствует либо в беседе, либо в базе бота"
 		return 0
 
 
-async def set_arguments_in_message(key):
-	for index_argument, argument in enumerate(messages[key]["args"]):
+async def set_arguments_in_message(obj):
+	for index_argument, argument in enumerate(obj["args"]):
 		try:
-			argument_checker_error = len(messages[key]["params"]["arguments"][messages[key]["argument_len"]][0].split("|"))
-
-			for index, argument_type in enumerate(messages[key]["params"]["arguments"][messages[key]["argument_len"]][0].split("|")):
+			argument_checker_error = len(obj["params"]["arguments"][obj["argument_len"]][0].split("|"))
+			
+			for index, argument_type in enumerate(obj["params"]["arguments"][obj["argument_len"]][0].split("|")):
 				if argument_type == "int":
 					if not str(argument).isdigit():
 						argument_checker_error -= 1
@@ -66,43 +56,43 @@ async def set_arguments_in_message(key):
 				
 				elif argument_type == "user":
 					if "@" in argument:
-						us = await user.get_object_user(argument, messages[key]["message"].chat.id)
+						us = await user.get_object_user(argument, obj["message"].chat.id)
 						
 						if us["id"] == 0:
-							messages[key]["attempt_users"].append(argument)
+							obj["attempt_users"].append(argument)
 						else:
-							messages[key]["users"].append(us)
+							obj["users"].append(us)
 						
 						break
 					
-					elif "entities" in messages[key]["message"]:
-						if "user" in messages[key]["message"]["entities"][index_argument]:
+					elif "entities" in obj["message"]:
+						if "user" in obj["message"]["entities"][index_argument]:
 							us = await user.get_object_user(
-								messages[key]["message"]["entities"][index_argument]["user"].id,
-								messages[key]["message"].chat.id
+								obj["message"]["entities"][index_argument]["user"].id,
+								obj["message"].chat.id
 							)
 							
 							if us["id"] == 0:
-								messages[key]["attempt_users"].append(argument)
+								obj["attempt_users"].append(argument)
 							else:
-								messages[key]["users"].append(us)
+								obj["users"].append(us)
 							
 							break
-
-					messages[key]["arguments_types_error"].append(str(index + 1))
+					
+					obj["arguments_types_error"].append(str(index + 1))
 			
 			if argument_checker_error == 0:
-				messages[key]["arguments_types_error"].append(str(messages[key]["argument_len"]))
+				obj["arguments_types_error"].append(str(obj["argument_len"]))
 			
-			messages[key]["argument_len"] += 1
+			obj["argument_len"] += 1
 		except KeyError:
 			pass
+	
+	return obj
 
 
 async def check_errors(message, message_text, params):
-	key = "{}%{}%{}".format(message.message_id, message.from_user.id, message.chat.id)
-	
-	messages[key] = {
+	obj = {
 		"errors_message": False,
 		"args": list(filter(None, message_text.split(" "))),
 		"message": message,
@@ -116,23 +106,18 @@ async def check_errors(message, message_text, params):
 		"bot_obj": await bot.get_me()
 	}
 	
-	await set_arguments_in_message(key)
+	obj = await set_arguments_in_message(obj)
 	
-	if await check_error_type_and_users_and_len_arguments(key) == 0:
-		output = [0, messages[key]["errors_message"]]
-	elif await check_error_commands_not_usage_in_bot(key) == 0:
-		output = [0, messages[key]["errors_message"]]
-	elif await check_error_user_not_in_base(key) == 0:
-		output = [0, messages[key]["errors_message"]]
-	elif await check_error_not_commands_usage_me(key) == 0:
-		output = [0, messages[key]["errors_message"]]
+	if await check_error_type_and_users_and_len_arguments(obj) == 0:
+		output = [0, obj["errors_message"]]
+	elif await check_error_commands_not_usage_in_bot(obj) == 0:
+		output = [0, obj["errors_message"]]
+	elif await check_error_user_not_in_base(obj) == 0:
+		output = [0, obj["errors_message"]]
+	elif await check_error_not_commands_usage_me(obj) == 0:
+		output = [0, obj["errors_message"]]
 	else:
-		output = [1, messages[key]]
-	
-	try:
-		del messages[key]
-	except KeyError:
-		pass
+		output = [1, obj]
 	
 	return output
 

@@ -22,18 +22,20 @@ async def main(message, message_text, numeration_command):
 	usage = await error.check_errors(message, message_text, params)
 
 	if usage[0] == 1:
+		user_object_reply = None
+
 		if len(usage[1]["users"]) != 0:
 			user_object_reply = usage[1]["users"][0]
-		else:
+		elif "reply_to_message" in message:
 			user_object_reply = await user.get_object_user(message.reply_to_message.from_user.id)
 		user_object = await user.get_object_user(message.from_user.id)
-		
-		if len(usage[1]["args"]) != 0 and int(usage[1]["args"][0]) <= 0:
+
+		if user_object_reply is not None and len(usage[1]["args"]) != 0 and int(usage[1]["args"][0]) <= 0:
 			await message.reply("🚫 Такие переводы не принимаются")
-		elif len(usage[1]["args"]) != 0 and int(user_object["b"]) >= int(usage[1]["args"][0]):
+		elif user_object_reply is not None and len(usage[1]["args"]) != 0 and int(user_object["b"]) >= int(usage[1]["args"][0]):
 			if int(user_object["trans"][0]) < limit_trans_money_in_day:
 				await message.reply("✅ Пользователю успешно начислены монеты")
-				
+
 				user_object["trans"][0] = str(int(user_object["trans"][0]) + int(usage[1]["args"][0]))
 				user_object["trans"][1] = str(await timeDecoder.decoder(["1", "день"]))
 
@@ -43,7 +45,7 @@ async def main(message, message_text, numeration_command):
 				await message.reply("🚫 Лимит на количество переведённых монет за сутки истрачен. ({})".format(
 					await timeDecoder.decodate(user_object["trans"][1])
 				))
-		elif len(usage[1]["args"]) != 0:
+		elif user_object_reply is not None and len(usage[1]["args"]) != 0:
 			await message.reply("🚫 У тебя нет столько монет")
 	else:
 		await error.send_errors(message, usage)
