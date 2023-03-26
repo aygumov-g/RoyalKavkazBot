@@ -16,9 +16,7 @@ async def get_log(log_int):
 
 async def main(message, message_text, numeration_command):
 	usage = await error.check_errors(message, message_text, {
-		"arguments": {
-			1: ["user"],
-		},
+		"block_arguments": True,
 		"commands": numeration_command
 	})
 	
