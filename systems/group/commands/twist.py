@@ -4,10 +4,13 @@ from cogs import error, user, slicer, collection
 
 from cogs import numberDecoder
 
-from systems.group import handler_rates
-
 from systems.group.commands.log import get_log
-from systems.group.handler_rates import rates_types_int
+from systems.group.handler_rates import (
+	rates_types_chit_not_chit,
+	rates_coefficient,
+	rates_types_int,
+	rates_types
+)
 
 import random
 
@@ -30,39 +33,89 @@ async def add_log(message, ball):
 	collection.log_db[message.chat.id]["uptime"] = str(datetime.datetime.now())
 
 
-async def add_money_winner(message):
-	ball = random.randint(1, 37)
-
-	output_message = "Рулетка: {} {}".format(
-		await get_log(ball), ball
-	)
+async def thumbnail_in_output_message(output_message, checker_and_zero):
+	output = output_message
 	
-	for rates in collection.roulette_db[message.chat.id]["rates"]:
-		checker = 0
+	if checker_and_zero == 1:
+		output += "\n\n💬 Тому кто поставил ставку возврат половины его ставки"
+	
+	elif checker_and_zero > 1:
+		output += "\n\n💬 Другим кто поставил ставки, возврат половины их ставок"
 
-		if rates[2] in handler_rates.rates_types[1] and int(ball) in rates_types_int[1]:
-			checker = [rates[0], int(rates[1]) * 2]
-		elif rates[2] in handler_rates.rates_types[2] and int(ball) in rates_types_int[2]:
-			checker = [rates[0], int(rates[1]) * 2]
-		elif rates[2] in handler_rates.rates_types[3] and int(ball) in rates_types_int[3]:
-			checker = [rates[0], int(rates[1]) * len(collection.roulette_db[message.chat.id]["rates"])]
-		
-		if checker != 0 and int(checker[0]) in collection.users_db:
-			user_object = await user.get_object_user(int(checker[0]))
+	return output
 
-			output_message += "\n<code>+</code> <a href=\"{}\">{}</a> <code>></code> {}".format(
+
+async def add_in_output_message(output_message, checker, winner_users):
+	if checker != 0 and int(checker[0]) in collection.users_db and not int(checker[0]) in winner_users:
+		user_object = await user.get_object_user(int(checker[0]))
+
+		if len(checker) != 5:
+			output_message += "\n<b>{}</b> <a href=\"{}\">{}</a> <code>></code> {} [{}]".format(
+				checker[2],
 				await user.get_link_user(user_object["username"], user_object["id"]),
 				await slicer.slicer(
 					await user.get_name_user(user_object["first_name"], user_object["username"], user_object["id"]), 13
 				),
-				await numberDecoder.space_decoder(checker[1])
+				await numberDecoder.space_decoder(checker[1]),
+				checker[3]
 			)
-			
-			user_object["b"] = str(int(user_object["b"]) + checker[1])
+		
+		user_object["b"] = str(int(user_object["b"]) + checker[1])
+		
+		winner_users.append(int(checker[0]))
+
+	return output_message
+
+
+async def add_money_winner(message):
+	ball = random.randint(1, 37)
+
+	output_message, checker_and_zero = "Рулетка: {} {}".format(
+		await get_log(ball), ball
+	), 0
+
+	for rates in collection.roulette_db[message.chat.id]["rates"]:
+		list_rates, checker, winner_users = rates[2].split("-"), 0, []
+
+		if not int(ball) in rates_types_int[3]:  # если выпал не 0 "не зелёное"
+			if len(list_rates) > 1 and str(ball) in list_rates:  # выигрыш при ставках в диапозоне
+				checker = [rates[0], int(int(rates[1]) * rates_coefficient[len(list_rates)]), "x{}".format(
+					rates_coefficient[len(list_rates)]
+				), "на {}-{}".format(
+					list_rates[0], list_rates[-1]
+				)]
 	
+			elif len(list_rates) == 1 and str(list_rates[0]).isdigit() and int(list_rates[0]) == ball:  # выигрыш при ставке на одно число
+				checker = [rates[0], int(rates[1]) * rates_coefficient[1], "x{}".format(
+					rates_coefficient[1]
+				), "на {}".format(
+					list_rates
+				)]
+	
+			elif len(list_rates) == 1 and rates[2] in rates_types[1] and int(ball) in rates_types_int[1]:  # выигрыш при красном
+				checker = [rates[0], int(rates[1]) * 2, "x2", "на красный"]
+			
+			elif len(list_rates) == 1 and rates[2] in rates_types[2] and int(ball) in rates_types_int[2]:  # выигрыш при чёрном
+				checker = [rates[0], int(rates[1]) * 2, "x2", "на чёрный"]
+			
+			elif len(list_rates) == 1 and rates[2] in rates_types_chit_not_chit[1] and int(ball) % 2 == 0:  # выигрыш при чётном
+				checker = [rates[0], int(rates[1]) * 2, "2", "на чётное"]
+			
+			elif len(list_rates) == 1 and rates[2] in rates_types_chit_not_chit[2] and int(ball) % 2 != 0:  # выигрыш при нечётном
+				checker = [rates[0], int(rates[1]) * 2, "2", "на нечётное"]
+
+		elif len(list_rates) == 1 and rates[2] in rates_types[3] + [str(i) for i in rates_types_int[3]]:  # если выпал 0 и ставка тоже была на него 0
+			checker = [rates[0], int(rates[1]) * 35, "x35", "на зелёный"]
+		
+		else:  # если ставка не была на ноль, то возвращаем игроку половину ставки и увеличиваем количество ставок не на 0
+			checker = [rates[0], int(int(rates[1]) / 2), "x35", "на зелёный", 0]  # 0 в конце означает что не добавлять это в сообщение
+			checker_and_zero += 1
+		
+		output_message = await add_in_output_message(output_message, checker, winner_users)  # обновляем сообщение которое отправляется в чат
+
 	await add_log(message, ball)
 	
-	return output_message
+	return await thumbnail_in_output_message(output_message, checker_and_zero)
 
 
 async def main(message, message_text, numeration_command):
@@ -81,7 +134,12 @@ async def main(message, message_text, numeration_command):
 				output = "🚫 Сделай ставку, потом крути"
 		else:
 			output = "🚫 Нету ставок чтобы крутить"
-
-		await message.reply(output, parse_mode="HTML", disable_web_page_preview=True)
+		
+		try:
+			await message.reply(output, parse_mode="HTML", disable_web_page_preview=True)
+		except Exception as exception:
+			await message.reply("❗️Произошла ошибка при отправке сообщения с рулеткой: {}💬\nСообщение не было отправлено но все ставки были засчитаны".format(
+				exception
+			))
 	else:
 		await error.send_errors(message, usage)
