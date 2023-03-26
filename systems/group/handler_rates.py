@@ -52,20 +52,28 @@ async def start_roulette(message):
 		}
 
 
-async def check_rates_sector_in_user(message):
+async def check_rates_sector_in_user(message, real_ret):
 	sectors_len = 0
 
 	if message.chat.id in collection.roulette_db:
 		for rate in collection.roulette_db[message.chat.id]["rates"]:
 			if int(rate[0]) == message.from_user.id:
 				user_types_rates = str(rate[2]).split("-")
-				
 				if len(user_types_rates) != 1:
 					sectors_len += len(user_types_rates)
-
+				elif len(user_types_rates) == 1 and str(user_types_rates[0]).isdigit():
+					sectors_len += 1
 				elif len(user_types_rates) == 1 and str(user_types_rates[0]) in rates_types_chit_not_chit[1] + rates_types_chit_not_chit[2]:
 					sectors_len += 18
-	
+
+				user_real_ret = str(real_ret[1]).split("-")
+				if len(user_real_ret) != 1:
+					sectors_len += len(user_real_ret)
+				elif len(user_real_ret) == 1 and str(user_real_ret[0]).isdigit():
+					sectors_len += 1
+				elif len(user_real_ret) == 1 and str(user_real_ret[0]) in rates_types_chit_not_chit[1] + rates_types_chit_not_chit[2]:
+					sectors_len += 18
+
 	return sectors_len
 
 
@@ -137,8 +145,8 @@ async def main(message):
 			await message.reply("🚫 У тебя нет монет")
 		elif int(rate[0]) <= 0:
 			await message.reply("🚫 Такие ставки не принимаются")
-		elif await check_rates_sector_in_user(message) >= 18:
-			await message.reply("🚫 Ты истратил все свои свободные секторы в этой рулетке. Введи \"<code>!го</code>\"", parse_mode="HTML")
+		elif await check_rates_sector_in_user(message, rate) >= 18:
+			await message.reply("🚫 У тебя не осталось столько свободных секторов в этой рулетке. Введи \"<code>!го</code>\"", parse_mode="HTML")
 		elif int(user_object["b"]) >= rate[0]:
 			await message.reply("✅ Ставка принята")
 			
