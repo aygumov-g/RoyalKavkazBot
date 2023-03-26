@@ -59,19 +59,19 @@ async def check_rates_sector_in_user(message, real_ret):
 		for rate in collection.roulette_db[message.chat.id]["rates"]:
 			if int(rate[0]) == message.from_user.id:
 				user_types_rates = str(rate[2]).split("-")
-				if len(user_types_rates) != 1:
+				if len(user_types_rates) != 1:  # ставки в диапозоне которые были сделаны
 					sectors_len += len(user_types_rates)
-				elif len(user_types_rates) == 1 and str(user_types_rates[0]).isdigit():
+				elif len(user_types_rates) == 1 and str(user_types_rates[0]).isdigit():  # ставки на число
 					sectors_len += 1
-				elif len(user_types_rates) == 1 and str(user_types_rates[0]) in rates_types_chit_not_chit[1] + rates_types_chit_not_chit[2]:
+				elif len(user_types_rates) == 1 and str(user_types_rates[0]) in rates_types_chit_not_chit[1] + rates_types_chit_not_chit[2]:  # ставки на чётное и нечётное
 					sectors_len += 18
 
 				user_real_ret = str(real_ret[1]).split("-")
-				if len(user_real_ret) != 1:
+				if len(user_real_ret) != 1:  # ставка в диапозоне которая была сделана
 					sectors_len += len(user_real_ret)
-				elif len(user_real_ret) == 1 and str(user_real_ret[0]).isdigit():
+				elif len(user_real_ret) == 1 and str(user_real_ret[0]).isdigit():  # ставка которая сделана на число
 					sectors_len += 1
-				elif len(user_real_ret) == 1 and str(user_real_ret[0]) in rates_types_chit_not_chit[1] + rates_types_chit_not_chit[2]:
+				elif len(user_real_ret) == 1 and str(user_real_ret[0]) in rates_types_chit_not_chit[1] + rates_types_chit_not_chit[2]:  # ставка которая сделана на нечётное или нечётное
 					sectors_len += 18
 
 	return sectors_len
