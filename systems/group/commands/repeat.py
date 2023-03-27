@@ -5,6 +5,7 @@ from systems.group import handler_rates
 
 async def main(message, message_text, numeration_command):
 	usage = await error.check_errors(message, message_text, {
+		"block_arguments": True,
 		"commands": numeration_command
 	})
 
