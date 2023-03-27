@@ -3,11 +3,11 @@ import config
 from systems.group import handler_rates
 
 from systems.group.commands import (
-	balance, translation, roulette, twist, log, add
+	balance, translation, roulette, twist, log, add, global_nick, repeat, cancel
 )
 
 
-async def usage_command(message, message_text, numeration_command):
+async def usage_command(message, message_text, numeration_command, command_text):
 	if numeration_command == 1:
 		await balance.main(message, message_text, numeration_command)
 	elif numeration_command == 2:
@@ -20,6 +20,12 @@ async def usage_command(message, message_text, numeration_command):
 		await log.main(message, message_text, numeration_command)
 	elif numeration_command == 6:
 		await add.main(message, message_text, numeration_command)
+	elif numeration_command == 7:
+		await global_nick.main(message, message_text, numeration_command, command_text)
+	elif numeration_command == 8:
+		await repeat.main(message, message_text, numeration_command)
+	elif numeration_command == 9:
+		await cancel.main(message, message_text, numeration_command)
 
 
 async def check_call_usage_command(message, numeration_command):
@@ -77,5 +83,5 @@ async def check_usage_command(message):
 
 				if check_command_in_message_text_output[1] == commandSynonyms and await check_call_usage_command(message, numerationCommands):
 					await usage_command(
-						message, check_command_in_message_text_output[0], numerationCommands
+						message, check_command_in_message_text_output[0], numerationCommands, check_command_in_message_text_output[1]
 					);return

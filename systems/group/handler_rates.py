@@ -2,6 +2,7 @@ from cogs import user, collection
 
 import datetime
 
+
 max_len_rates = 50
 
 rates_coefficient = {
@@ -84,9 +85,9 @@ async def check_rates(message):
 		if len(message_text_list) == 3 and message_text_list[1] != "на":  # защита от "2 выфвыф 3" и прочего
 			return output
 
-		elif str(message_text_list[0]).isdigit() or str(message_text_list[0]) in ["ва-банк", "вабанк"]:
+		elif str(message_text_list[0]).isdigit() or str(message_text_list[0].lower()) in ["ва-банк", "вабанк"]:
 			rate = message_text_list[0]
-			if str(message_text_list[0]) in ["ва-банк", "вабанк"]:  # если был прописан ва-банк - ставим все монеты
+			if str(message_text_list[0].lower()) in ["ва-банк", "вабанк"]:  # если был прописан ва-банк - ставим все монеты
 				rate = (await user.get_object_user(message.from_user.id))["b"]
 
 			message_text_rates_list = message_text_list[-1].replace(" ", "").split("-")
@@ -149,12 +150,17 @@ async def main(message):
 			await message.reply("🚫 У тебя не осталось столько свободных секторов в этой рулетке. Введи \"<code>!го</code>\"", parse_mode="HTML")
 		elif int(user_object["b"]) >= rate[0]:
 			await message.reply("✅ Ставка принята")
-			
+
 			collection.roulette_db[message.chat.id]["rates"].append([
 				str(message.from_user.id), str(rate[0]), str(rate[1])
 			])
-			
+
 			user_object["b"] = str(int(user_object["b"]) - int(rate[0]))
+
+			user_object["last_rate"] = [
+				str(rate[0]),
+				str(rate[1])
+			]
 		else:
 			await message.reply("🚫 У тебя нет столько монет")
 		

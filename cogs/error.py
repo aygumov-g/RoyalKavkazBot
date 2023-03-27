@@ -29,11 +29,11 @@ async def check_error_type_and_users_and_len_arguments(obj):
 		"""Были прописаны аргументы в команде в которой не должны были"""
 		return 0
 	
-	elif "arguments" in obj["params"] and len(obj["params"]["arguments"]) < len(obj["args"]):
+	elif "arguments" in obj["params"] and len(obj["params"]["arguments"]) < len(obj["args"]) and not "repliks" in obj["params"]:
 		"""Неправильное количество аргументов в команде"""
 		return 0
 	
-	elif len(obj["arguments_types_error"]) != 0:
+	elif len(obj["arguments_types_error"]) != 0 and not "repliks" in obj["params"]:
 		"""Неправильный тип аргумента в команде"""
 		return 0
 	

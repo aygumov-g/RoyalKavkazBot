@@ -10,7 +10,9 @@ async def get_link_user(username, ids):
 
 
 async def get_name_user(first_name, username, ids):
-	if not first_name in [".", ","]:
+	if int(ids) in collection.users_db and "nick" in collection.users_db[int(ids)]:
+		return collection.users_db[int(ids)]["nick"]
+	elif not first_name in [".", ","]:
 		check = 1
 
 		for char in first_name:

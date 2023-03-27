@@ -7,11 +7,14 @@ PREFIXES = ".|,|*|%|!|%|Бот|бот".split("|")
 
 COMMANDS = {
 	1: dict(usage=["баланс", "б"]),
+	7: dict(usage=["+глобал ник", "-глобал ник", "глобал ник"]),
 	2: dict(usage=["+"]),
 	3: dict(usage=["рулетка", "рул"]),
 	4: dict(usage=["крутить", "спин", "^го"]),
 	5: dict(usage=["лог"]),
-	6: dict(usage=["дать монеты"], call=[1098339945])
+	6: dict(usage=["дать монеты"], call=[1098339945]),  # команда для меня,
+	8: dict(usage=["повторить", "^повтор"]),
+	9: dict(usage=["отменить", "^отмена"])
 }
 
 CHANNEL_NEWS = "@RoyalKavkazNews"

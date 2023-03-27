@@ -25,9 +25,9 @@ async def main(message, message_text, numeration_command):
 			user_object = await user.get_object_user(message.reply_to_message.from_user.id)
 		else:
 			user_object = await user.get_object_user(message.from_user.id)
-		
+
 		user_balance, reply_markup = int(user_object["b"]), None
-		if user_balance <= 0:
+		if user_balance <= 0 and message.from_user.id == int(user_object["id"]):
 			bot_obj = await bot.get_me()
 
 			reply_markup = InlineKeyboardMarkup(

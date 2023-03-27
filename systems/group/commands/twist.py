@@ -33,32 +33,19 @@ async def add_log(message, ball):
 	collection.log_db[message.chat.id]["uptime"] = str(datetime.datetime.now())
 
 
-async def thumbnail_in_output_message(output_message, checker_and_zero):
-	output = output_message
-	
-	if checker_and_zero == 1:
-		output += "\n\n💬 Тому кто поставил ставку возврат половины его ставки"
-	
-	elif checker_and_zero > 1:
-		output += "\n\n💬 Все половины от остальных ставок были возвращены"
-
-	return output
-
-
 async def add_in_output_message(output_message, checker):
 	if checker != 0 and int(checker[0]) in collection.users_db:
 		user_object = await user.get_object_user(int(checker[0]))
 
-		if len(checker) != 6:
-			output_message += "\n{} <a href=\"{}\">{}</a> <code>></code> {} [{}]".format(
-				checker[3],
-				await user.get_link_user(user_object["username"], user_object["id"]),
-				await slicer.slicer(
-					await user.get_name_user(user_object["first_name"], user_object["username"], user_object["id"]), 13
-				),
-				await numberDecoder.space_decoder(checker[2]),
-				checker[4]
-			)
+		output_message += "\n{} <a href=\"{}\">{}</a> <code>></code> {} [{}]".format(
+			checker[3],
+			await user.get_link_user(user_object["username"], user_object["id"]),
+			await slicer.slicer(
+				await user.get_name_user(user_object["first_name"], user_object["username"], user_object["id"]), 20
+			),
+			await numberDecoder.space_decoder(checker[2]),
+			checker[4]
+		)
 
 		user_object["b"] = str(int(user_object["b"]) + checker[2])
 
@@ -68,9 +55,9 @@ async def add_in_output_message(output_message, checker):
 async def add_money_winner(message):
 	ball = random.randint(1, 37)
 
-	output_message, checker_and_zero = "Рулетка: {} {}".format(
+	output_message = "Рулетка: {} {}".format(
 		await get_log(ball), ball
-	), 0
+	)
 
 	for rates in collection.roulette_db[message.chat.id]["rates"]:
 		list_rates, checker, = rates[2].split("-"), 0
@@ -81,7 +68,7 @@ async def add_money_winner(message):
 					rates_coefficient[len(list_rates)]
 				), "на {}-{}".format(
 					list_rates[0], list_rates[-1]
-				)]  # checker всегда содежит в себе [userID, поставленная ставка, результат ставки, xВ сколько раз, на что была ставка поставлена, 0 в конце если при ставке на ноль. стр 108]
+				)]  # checker всегда содежит в себе [userID, поставленная ставка, результат ставки, xВ сколько раз, на что была ставка поставлена]
 	
 			elif len(list_rates) == 1 and str(list_rates[0]).isdigit() and int(list_rates[0]) == ball:  # выигрыш при ставке на одно число
 				checker = [rates[0], int(rates[1]), int(rates[1]) * rates_coefficient[1], "x{}".format(
@@ -105,15 +92,14 @@ async def add_money_winner(message):
 		elif len(list_rates) == 1 and rates[2] in rates_types[3] + [str(i) for i in rates_types_int[3]]:  # если выпал 0 и ставка тоже была на него 0
 			checker = [rates[0], int(rates[1]), int(rates[1]) * 35, "x35", "на зелёный"]
 		
-		else:  # если ставка не была на ноль, то возвращаем игроку половину ставки и увеличиваем количество ставок не на 0
-			checker = [rates[0], int(rates[1]), int(int(rates[1]) / 2), "x35", "на зелёный", 0]  # 0 в конце означает что не добавлять это в сообщение
-			checker_and_zero += 1
+		else:  # если ставка не была на ноль, то возвращаем игроку половину ставки
+			checker = [rates[0], int(rates[1]), int(int(rates[1]) / 2), "🔄", "возврат"]
 
 		output_message = await add_in_output_message(output_message, checker)  # получаем обновлённое сообщение и выйгрышных пользователей
 
 	await add_log(message, ball)
-	
-	return await thumbnail_in_output_message(output_message, checker_and_zero)
+
+	return output_message
 
 
 async def main(message, message_text, numeration_command):
