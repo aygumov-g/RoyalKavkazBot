@@ -18,6 +18,7 @@ COMMANDS = {
 }
 
 CHANNEL_NEWS = "@RoyalKavkazNews"
+BOT_LINK = "https://t.me/RoyalKavkazBot"
 
 TIMES = {
 	0: ["секунда", "секунды", "секунду", "секунд", "сек", "с", "second", "seconds", "sec", "s"],

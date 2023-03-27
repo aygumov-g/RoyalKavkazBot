@@ -2,11 +2,10 @@ from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 
 from systems.private import buttons
 
-from main import bot
-
 from cogs import error, user
-
 from cogs import numberDecoder
+
+import config
 
 
 async def main(message, message_text, numeration_command):
@@ -28,16 +27,10 @@ async def main(message, message_text, numeration_command):
 
 		user_balance, reply_markup = int(user_object["b"]), None
 		if user_balance <= 0 and message.from_user.id == int(user_object["id"]):
-			bot_obj = await bot.get_me()
-
-			reply_markup = InlineKeyboardMarkup(
-				inline_keyboard=[
-					[
-						InlineKeyboardButton(text="Бонус", url="https://t.me/{}?start={}".format(
-							bot_obj["username"], buttons.BUTTONS["bonus"]
-						))
-					]
-				]
+			reply_markup = InlineKeyboardMarkup().row(
+				InlineKeyboardButton(text="Бонус", url="{}?start={}".format(
+					config.BOT_LINK, buttons.BUTTONS["bonus"]
+				))
 			)
 
 		await message.reply("<a href=\"{}\"><b>></b></a> {}".format(
@@ -46,4 +39,3 @@ async def main(message, message_text, numeration_command):
 		), parse_mode="HTML", disable_web_page_preview=True, reply_markup=reply_markup)
 	else:
 		await error.send_errors(message, usage)
-	
