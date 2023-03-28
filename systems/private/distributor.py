@@ -1,7 +1,8 @@
 from systems.private.commands import (
 	start,
 	bonus,
-	profile
+	profile,
+	donate
 )
 
 from systems.private import buttons
@@ -14,3 +15,5 @@ async def check_usage_command(message):
 		await bonus.send(message)
 	elif message.text == "/profile" or message.text == buttons.BUTTONS["profile"]:
 		await profile.send(message)
+	elif message.text == "/donate" or message.text == buttons.BUTTONS["donate"]:
+		await donate.send(message)

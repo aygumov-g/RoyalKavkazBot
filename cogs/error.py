@@ -2,6 +2,8 @@ from main import bot
 
 from cogs import user, collection
 
+import config
+
 
 async def check_error_not_commands_usage_me(obj):
 	if "me" in obj["params"] and obj["params"]["me"] is False:
@@ -50,6 +52,15 @@ async def set_arguments_in_message(obj):
 			for index, argument_type in enumerate(obj["params"]["arguments"][obj["argument_len"]][0].split("|")):
 				if argument_type == "int":
 					if not str(argument).isdigit():
+						argument_checker_error -= 1
+					else:
+						break
+
+				elif argument_type == "time":
+					for i in config.TIMES:
+						obj["times_interval"] += config.TIMES[i]
+
+					if not argument in obj["times_interval"]:
 						argument_checker_error -= 1
 					else:
 						break

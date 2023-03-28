@@ -3,7 +3,9 @@ import config
 from systems.group import handler_rates
 
 from systems.group.commands import (
-	balance, translation, roulette, twist, log, add, global_nick, repeat, cancel, bot_stop
+	balance, translation, roulette, twist,
+	log, add, global_nick, repeat, cancel,
+	bot_stop, add_protection
 )
 
 
@@ -28,6 +30,8 @@ async def usage_command(message, message_text, numeration_command, command_text)
 		await cancel.main(message, message_text, numeration_command)
 	elif numeration_command == 10:
 		await bot_stop.main(message, message_text, numeration_command, command_text)
+	elif numeration_command == 11:
+		await add_protection.main(message, message_text, numeration_command)
 
 
 async def check_call_usage_command(message, numeration_command, message_text, message_prefix):

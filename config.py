@@ -4,7 +4,7 @@ TOKEN_BD1 = "mongodb+srv://admin:AyGadzhi11@cluster0.3cb1l.mongodb.net/?retryWri
 TOKEN_BD2 = "mongodb+srv://admin1:AyGadzhi11@cluster0.krtj0.mongodb.net/?retryWrites=true&w=majority"  # Казино - База пользователь
 TOKEN_BD3 = "mongodb+srv://admin2:AyGadzhi11@cluster0.awx9ihy.mongodb.net/?retryWrites=true&w=majority"  # Казино - Бот стоп
 
-PREFIXES = ".|,|*|%|!|%".split("|")
+PREFIXES = ".|,|*|%|!".split("|")
 
 COMMANDS = {
 	1: dict(usage=["баланс", "б"]),
@@ -13,10 +13,11 @@ COMMANDS = {
 	3: dict(usage=["рулетка", "рул"]),
 	4: dict(usage=["крутить", "спин", "^го"]),
 	5: dict(usage=["лог"]),
-	6: dict(usage=["дать монеты"], call=[1098339945]),  # команда для меня,
+	6: dict(usage=["дать монеты"], call=[1098339945]),  # команда для меня
 	8: dict(usage=["повторить", "^повтор"]),
 	9: dict(usage=["отменить", "^отмена"]),
-	10: dict(usage=["бот стоп", "-бот стоп^"])
+	10: dict(usage=["бот стоп", "-бот стоп^"]),
+	11: dict(usage=["дать защиту"], call=[1098339945]),  # команда для меня
 }
 
 CHANNEL_NEWS = "@RoyalKavkazNews"

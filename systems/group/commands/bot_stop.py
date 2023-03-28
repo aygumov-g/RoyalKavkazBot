@@ -1,8 +1,26 @@
 from cogs import error, user, collection
 
+import datetime
+
+
+async def checker_protection(user_id):
+	output = True
+
+	try:
+		user_object = await user.get_object_user(user_id)
+
+		if datetime.datetime.strptime(user_object["bs"], "%Y-%m-%d %H:%M:%S.%f") > datetime.datetime.now():
+			output = False
+		else:
+			del user_object["bs"]
+	except KeyError:
+		pass
+
+	return output
+
 
 async def checker_reply_stop(message):
-	if "reply_to_message" in message and message.from_user.id in collection.bot_stop_db and message.reply_to_message.from_user.id in collection.bot_stop_db[message.from_user.id]["stop"]:
+	if await checker_protection(message.from_user.id) is True and "reply_to_message" in message and message.from_user.id in collection.bot_stop_db and message.reply_to_message.from_user.id in collection.bot_stop_db[message.from_user.id]["stop"]:
 		try:
 			await message.delete()
 		except Exception as exception:
@@ -41,6 +59,9 @@ async def main(message, message_text, numeration_command, command_text):
 				await user.get_link_user(message.from_user.username, message.from_user.id), await user.get_name_user(message.from_user.first_name, message.from_user.username, message.from_user.id),
 				await user.get_link_user(user_object["username"], user_object["id"]), await user.get_name_user(user_object["first_name"], user_object["username"], user_object["id"])
 			)
+
+			if "bs" in user_object:
+				output += "\n💬 Но, у этого пользователя защита. Возможно, этот запрет мало чем поможет тебе..."
 
 			collection.bot_stop_db[user_object["id"]]["stop"].append(message.from_user.id)
 			if len(collection.bot_stop_db[user_object["id"]]["stop"]) > 50:  # защита от переполнения (всего запретить человеку отвечать на свои сообщения могут 50 человек)
