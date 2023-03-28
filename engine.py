@@ -30,13 +30,13 @@ async def usage_command(message, message_text, numeration_command, command_text)
 		await bot_stop.main(message, message_text, numeration_command, command_text)
 
 
-async def check_call_usage_command(message, numeration_command):
+async def check_call_usage_command(message, numeration_command, message_text, message_prefix):
 	output = True
 
 	if "call" in config.COMMANDS[numeration_command] and not message.from_user.id in config.COMMANDS[numeration_command]["call"]:
 		output = False
 
-	elif numeration_command != 10 and len(message.text) >= 3 and message.text[:3] == "бот":
+	elif numeration_command != 10 and len(message_text.replace(message_prefix, "", 1)) >= 3 and message_text.replace(message_prefix, "", 1)[:3] == "бот":
 		output = False
 
 	return output
@@ -56,12 +56,17 @@ async def check_command_in_message_text(command, message_text):
 
 
 async def dell_space_in_prefix(message_text):
+	message_prefix = ""
+
 	for i in range(len(message_text)):
 		for prefix in config.PREFIXES + ["+", "-"]:
 			if message_text[:len(prefix) + 1] == "{} ".format(prefix):
 				message_text = "{}{}".format(prefix, message_text[len(prefix) + 1:])
+
+			if message_text[:len(prefix)] == prefix:
+				message_prefix = prefix
 	
-	return message_text
+	return message_text, message_prefix
 
 
 async def message_text_format(message_text):
@@ -77,7 +82,7 @@ async def message_text_format(message_text):
 
 async def check_usage_command(message):
 	message_text = await message_text_format(message.text)
-	message_text = await dell_space_in_prefix(message_text)
+	message_text, message_prefix = await dell_space_in_prefix(message_text)
 
 	if await handler_rates.main(message) is False:
 		for numerationCommands in config.COMMANDS:
@@ -86,7 +91,7 @@ async def check_usage_command(message):
 					commandSynonyms, message_text
 				)
 
-				if check_command_in_message_text_output[1] == commandSynonyms and await check_call_usage_command(message, numerationCommands):
+				if check_command_in_message_text_output[1] == commandSynonyms and await check_call_usage_command(message, numerationCommands, message_text, message_prefix):
 					await usage_command(
 						message, check_command_in_message_text_output[0], numerationCommands, check_command_in_message_text_output[1]
 					);return
