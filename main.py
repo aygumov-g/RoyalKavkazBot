@@ -12,9 +12,15 @@ import datetime
 bot = Bot(token=config.TOKEN)
 dp = Dispatcher(bot)
 
-db1 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD1).Royal
-db2 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).main
-db2Backup = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).mainBackup
+# Казино - Дополнения
+db1 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD1).RoyalTest
+
+# Казино - База пользователь
+db2 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).mainTest
+db2Backup = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).mainTestBackup
+
+#  Казино - Бот стоп
+db3 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD3).main
 
 
 async def on_startup(dp):
@@ -24,14 +30,17 @@ async def on_startup(dp):
 		newCommandsList = []
 		
 		for commandSynonyms in config.COMMANDS[numerationCommands]["usage"]:
-			if commandSynonyms[0] != "^":
-				newCommandsList.append(commandSynonyms)
+			if commandSynonyms[-1] != "^":
+				if commandSynonyms[0] != "^":
+					newCommandsList.append(commandSynonyms)
+				else:
+					commandSynonyms = commandSynonyms[1:]
+				
+				for prefix in config.PREFIXES:
+					newCommandsList.append("{}{}".format(prefix, commandSynonyms))
 			else:
-				commandSynonyms = commandSynonyms[1:]
-			
-			for prefix in config.PREFIXES:
-				newCommandsList.append("{}{}".format(prefix, commandSynonyms))
-		
+				newCommandsList.append(commandSynonyms[:-1])
+
 		config.COMMANDS[numerationCommands]["usage"] = newCommandsList
 
 	await loader.on_loader()

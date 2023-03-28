@@ -3,7 +3,7 @@ import config
 from systems.group import handler_rates
 
 from systems.group.commands import (
-	balance, translation, roulette, twist, log, add, global_nick, repeat, cancel
+	balance, translation, roulette, twist, log, add, global_nick, repeat, cancel, bot_stop
 )
 
 
@@ -26,6 +26,8 @@ async def usage_command(message, message_text, numeration_command, command_text)
 		await repeat.main(message, message_text, numeration_command)
 	elif numeration_command == 9:
 		await cancel.main(message, message_text, numeration_command)
+	elif numeration_command == 10:
+		await bot_stop.main(message, message_text, numeration_command, command_text)
 
 
 async def check_call_usage_command(message, numeration_command):
@@ -33,7 +35,10 @@ async def check_call_usage_command(message, numeration_command):
 
 	if "call" in config.COMMANDS[numeration_command] and not message.from_user.id in config.COMMANDS[numeration_command]["call"]:
 		output = False
-	
+
+	elif numeration_command != 10 and len(message.text) >= 3 and message.text[:3] == "бот":
+		output = False
+
 	return output
 
 
@@ -52,7 +57,7 @@ async def check_command_in_message_text(command, message_text):
 
 async def dell_space_in_prefix(message_text):
 	for i in range(len(message_text)):
-		for prefix in config.PREFIXES:
+		for prefix in config.PREFIXES + ["+", "-"]:
 			if message_text[:len(prefix) + 1] == "{} ".format(prefix):
 				message_text = "{}{}".format(prefix, message_text[len(prefix) + 1:])
 	

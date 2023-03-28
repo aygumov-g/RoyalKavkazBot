@@ -30,3 +30,11 @@ async def check_len_documents_in_roulette_db():
 			"id": -1,
 			"warning": "Не удалять! Нужен для правильной работы."
 		}
+
+
+async def check_len_documents_in_bot_stop_db():
+	if not -1 in collection.bot_stop_db:
+		collection.bot_stop_db[-1] = {
+			"id": -1,
+			"warning": "Не удалять! Нужен для правильной работы."
+		}

@@ -14,7 +14,8 @@ COMMANDS = {
 	5: dict(usage=["лог"]),
 	6: dict(usage=["дать монеты"], call=[1098339945]),  # команда для меня,
 	8: dict(usage=["повторить", "^повтор"]),
-	9: dict(usage=["отменить", "^отмена"])
+	9: dict(usage=["отменить", "^отмена"]),
+	10: dict(usage=["бот стоп", "-бот стоп^"])
 }
 
 CHANNEL_NEWS = "@RoyalKavkazNews"

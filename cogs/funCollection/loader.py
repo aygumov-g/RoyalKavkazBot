@@ -24,11 +24,17 @@ async def load_log_db():
 		collection.log_db[logCollection["id"]] = logCollection
 
 
+async def load_bot_stop_db():
+	for bot_stopCollection in await main.db3.bot_stop.find({}).to_list(None):
+		collection.bot_stop_db[bot_stopCollection["id"]] = bot_stopCollection
+
+
 async def on_loader():
 	tasks = [
 		asyncio.create_task(load_users_db()),
 		asyncio.create_task(load_roulette_db()),
-		asyncio.create_task(load_log_db())
+		asyncio.create_task(load_log_db()),
+		asyncio.create_task(load_bot_stop_db())
 	]
 
 	for task in tasks:
