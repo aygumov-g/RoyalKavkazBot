@@ -13,15 +13,9 @@ async def main(message, message_text, numeration_command):
 		user_object = await user.get_object_user(message.from_user.id)
 
 		if "last_rate" in user_object:
-			await handler_rates.start_roulette(message)
-			
-			if int(user_object["b"]) == 0:
-				output = "🚫 У тебя нет монет"
-			elif len(collection.roulette_db[message.chat.id]["rates"]) >= handler_rates.max_len_rates:
-				output = "🚫 Введи \"<code>!крутить</code>\", в рулетке уже сделано максимальное число ставок"
-			elif await handler_rates.check_rates_sector_in_user(message, user_object["last_rate"]) >= 18:
-				output = "🚫 У тебя не осталось столько свободных секторов в этой рулетке. Введи \"<code>!го</code>\""
-			elif int(user_object["b"]) >= int(user_object["last_rate"][0]):
+			check_errors_rates = await handler_rates.check_errors_rates(message, user_object, user_object["last_rate"])
+
+			if check_errors_rates is False:
 				user_rate = user_object["last_rate"][1]
 				if "-" in user_rate:
 					user_rate_list = user_rate.split("-")
@@ -40,10 +34,10 @@ async def main(message, message_text, numeration_command):
 
 				user_object["b"] = str(int(user_object["b"]) - int(user_object["last_rate"][0]))
 			else:
-				output = "🚫 У тебя нет столько монет"
+				output = check_errors_rates
 		else:
 			output = "❎ Твоя последняя ставка не найдена"
-		
+
 		await message.reply(output, parse_mode="HTML", disable_web_page_preview=True)
 	else:
 		await error.send_errors(message, usage)
