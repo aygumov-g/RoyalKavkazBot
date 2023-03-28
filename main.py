@@ -13,11 +13,11 @@ bot = Bot(token=config.TOKEN)
 dp = Dispatcher(bot)
 
 # Казино - Дополнения
-db1 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD1).RoyalTest
+db1 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD1).Royal
 
 # Казино - База пользователь
-db2 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).mainTest
-db2Backup = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).mainTestBackup
+db2 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).main
+db2Backup = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD2).mainBackup
 
 #  Казино - Бот стоп
 db3 = motor.motor_asyncio.AsyncIOMotorClient(config.TOKEN_BD3).main

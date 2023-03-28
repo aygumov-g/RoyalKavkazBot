@@ -50,7 +50,7 @@ async def main(message, message_text, numeration_command, command_text):
 			output = "🚫 Ты уже запрещал этому пользователю отвечать на свои сообщения\n💬 Команда: \"<code>-бот стоп</code>\" — снять запрет на ответы"
 		
 		elif "-" in command_text and user_object["id"] in collection.bot_stop_db and message.from_user.id in collection.bot_stop_db[user_object["id"]]["stop"]:  # хочет снять запрет
-			output = "🟢  <a href=\"{}\">{}</a> снова может отвечать на твои сообщения".format(
+			output = "🟢 <a href=\"{}\">{}</a> снова может отвечать на твои сообщения".format(
 				await user.get_link_user(user_object["username"], user_object["id"]), await user.get_name_user(user_object["first_name"], user_object["username"], user_object["id"])
 			)
 			
