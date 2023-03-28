@@ -4,7 +4,7 @@ TOKEN_BD1 = "mongodb+srv://admin:AyGadzhi11@cluster0.3cb1l.mongodb.net/?retryWri
 TOKEN_BD2 = "mongodb+srv://admin1:AyGadzhi11@cluster0.krtj0.mongodb.net/?retryWrites=true&w=majority"  # Казино - База пользователь
 TOKEN_BD3 = "mongodb+srv://admin2:AyGadzhi11@cluster0.awx9ihy.mongodb.net/?retryWrites=true&w=majority"  # Казино - Бот стоп
 
-PREFIXES = ".|,|*|%|!|%|Бот|бот".split("|")
+PREFIXES = ".|,|*|%|!|%".split("|")
 
 COMMANDS = {
 	1: dict(usage=["баланс", "б"]),
