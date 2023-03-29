@@ -43,3 +43,5 @@ async def all_messages(message: types.Message):
 	await saver.check_len_documents_in_bot_stop_db()
 	
 	await checker_reply_stop(message)  # проверяет запрет на ответы
+	
+	await unloader.on_unloader()

@@ -32,6 +32,7 @@ async def main(message, message_text, numeration_command, command_text):
 		"arguments": {
 			1: ["user"]
 		},
+		"block_errors": ["user_not_in_base"],
 		"commands": numeration_command,
 		"bot_me": False,
 		"me": False
@@ -41,12 +42,14 @@ async def main(message, message_text, numeration_command, command_text):
 		params["user"] = True
 	
 	usage = await error.check_errors(message, message_text, params)
-	
+
 	if usage[0] == 1:
-		if len(usage[1]["users"]) != 0:
+		if len(usage[1]["users"]) != 0 and int(usage[1]["users"][0]["id"]) != 0:
 			user_object = usage[1]["users"][0]
 		else:
 			user_object = await user.get_object_user(message.reply_to_message.from_user.id)
+			if int(user_object["id"]) == 0:
+				user_object = message.reply_to_message.from_user
 
 		if not "-" in command_text and (not user_object["id"] in collection.bot_stop_db or not message.from_user.id in collection.bot_stop_db[user_object["id"]]["stop"]):  # хочет запретить отвечать на свои сообщения
 			if not int(user_object["id"]) in collection.bot_stop_db:

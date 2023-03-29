@@ -20,7 +20,7 @@ async def check_error_commands_not_usage_in_bot(obj):
 
 
 async def check_error_user_not_in_base(obj):
-	if "reply_to_message" in obj["message"]:
+	if ("reply_to_message" in obj["message"]) and (not "block_errors" in obj["params"] or not "user_not_in_base" in obj["params"]["block_errors"]):
 		if obj["message"].reply_to_message.from_user.id != obj["bot_obj"].id and not obj["message"].reply_to_message.from_user.id in collection.users_db:
 			obj["errors_message"] = "🚫 Пользователь отсутсвует в базе"
 			return 0
