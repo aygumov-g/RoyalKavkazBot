@@ -42,7 +42,7 @@ async def check_call_usage_command(message, numeration_command, message_text, me
 	if "call" in config.COMMANDS[numeration_command] and not message.from_user.id in config.COMMANDS[numeration_command]["call"]:
 		output = False
 
-	elif numeration_command != 10 and len(message_text.replace(message_prefix, "", 1)) >= 3 and message_text.replace(message_prefix, "", 1)[:3] == "бот":
+	elif numeration_command != 10 and len(message_text.lower().replace(message_prefix, "", 1)) >= 3 and message_text.lower().replace(message_prefix, "", 1)[:3] == "бот":
 		output = False
 
 	return output

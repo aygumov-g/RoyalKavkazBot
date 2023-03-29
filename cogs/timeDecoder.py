@@ -68,3 +68,12 @@ async def decodate(date):
 		)
 	else:
 		return "{}".format(result[0]) if len(result) == 1 else "{} {}".format(result[0], result[1])
+
+
+async def get_time_is_str(time_str):
+	try:
+		time_str_output = datetime.datetime.strptime(str(time_str), "%Y-%m-%d %H:%M:%S.%f")
+	except ValueError:
+		time_str_output = datetime.datetime.strptime(str(time_str), "%Y-%m-%d %H:%M:%S")
+	
+	return time_str_output

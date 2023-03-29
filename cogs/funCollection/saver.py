@@ -2,6 +2,8 @@ import datetime
 
 from cogs import collection
 
+from cogs import timeDecoder
+
 
 async def save_users_db(message):
 	time = datetime.datetime.now()
@@ -19,7 +21,7 @@ async def save_users_db(message):
 	collection.users_db[message.from_user.id]["first_name"] = message.from_user.first_name
 	collection.users_db[message.from_user.id]["username"] = message.from_user.username
 
-	if datetime.datetime.strptime(collection.users_db[message.from_user.id]["trans"][1], "%Y-%m-%d %H:%M:%S.%f") < time:
+	if await timeDecoder.get_time_is_str(collection.users_db[message.from_user.id]["trans"][1]) < time:
 		collection.users_db[message.from_user.id]["trans"][1] = str(time)
 		collection.users_db[message.from_user.id]["trans"][0] = str(0)
 
