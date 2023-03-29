@@ -19,7 +19,7 @@ async def save_users_db(message):
 	collection.users_db[message.from_user.id]["first_name"] = message.from_user.first_name
 	collection.users_db[message.from_user.id]["username"] = message.from_user.username
 
-	if datetime.datetime.strptime(collection.users_db[message.from_user.id]["trans"][1], "%Y-%m-%d %H:%M:%S.%f") < time:
+	if datetime.datetime.strptime(collection.users_db[message.from_user.id]["trans"][1], "%Y-%m-%d %H:%M:%S") < time:
 		collection.users_db[message.from_user.id]["trans"][1] = str(time)
 		collection.users_db[message.from_user.id]["trans"][0] = str(0)
 
