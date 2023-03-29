@@ -7,6 +7,7 @@ TOKEN_BD3 = "mongodb+srv://admin2:AyGadzhi11@cluster0.awx9ihy.mongodb.net/?retry
 PREFIXES = ".|,|*|%|!".split("|")
 
 COMMANDS = {
+	12: dict(usage=["бандит"]),
 	1: dict(usage=["баланс", "б"]),
 	7: dict(usage=["+глобал ник", "-глобал ник", "глобал ник"]),
 	2: dict(usage=["+"]),
@@ -16,9 +17,9 @@ COMMANDS = {
 	6: dict(usage=["дать монеты"], call=[1098339945]),  # команда для меня
 	8: dict(usage=["повторить", "^повтор"]),
 	9: dict(usage=["отменить", "^отмена"]),
-	10: dict(usage=["бот стоп", "-бот стоп^"]),
-	11: dict(usage=["дать защиту"], call=[1098339945]),  # команда для меня
-}
+	10: dict(usage=["бот стоп", "-бот стоп"]),
+	11: dict(usage=["дать защиту"], call=[1098339945]),  # команда для меня,
+}  # следующий номер должен быть "13"
 
 CHANNEL_NEWS = "@RoyalKavkazNews"
 BOT_LINK = "https://t.me/RoyalKavkazBot"

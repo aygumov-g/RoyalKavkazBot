@@ -28,18 +28,15 @@ async def on_startup(dp):
 	
 	for numerationCommands in config.COMMANDS:
 		newCommandsList = []
-		
+
 		for commandSynonyms in config.COMMANDS[numerationCommands]["usage"]:
-			if commandSynonyms[-1] != "^":
-				if commandSynonyms[0] != "^":
-					newCommandsList.append(commandSynonyms)
-				else:
-					commandSynonyms = commandSynonyms[1:]
-				
-				for prefix in config.PREFIXES:
-					newCommandsList.append("{}{}".format(prefix, commandSynonyms))
+			if commandSynonyms[0] != "^":
+				newCommandsList.append(commandSynonyms)
 			else:
-				newCommandsList.append(commandSynonyms[:-1])
+				commandSynonyms = commandSynonyms[1:]
+			
+			for prefix in config.PREFIXES:
+				newCommandsList.append("{}{}".format(prefix, commandSynonyms))
 
 		config.COMMANDS[numerationCommands]["usage"] = newCommandsList
 
