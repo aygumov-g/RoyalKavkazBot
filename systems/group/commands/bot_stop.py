@@ -24,7 +24,7 @@ async def checker_protection(user_id):
 
 
 async def checker_reply_stop(message):
-	if "reply_to_message" in message and message.reply_to_message.from_user.id in collection.bot_stop_db and message.from_user.id in collection.bot_stop_db[message.reply_to_message.from_user.id]["stop"] and await checker_protection(message.reply_to_message.from_user.id) is True:
+	if "reply_to_message" in message and message.reply_to_message.from_user.id in collection.bot_stop_db and message.from_user.id in collection.bot_stop_db[message.reply_to_message.from_user.id]["stop"] and await checker_protection(message.from_user.id) is True:
 		try:
 			await message.delete()
 		except Exception as exception:
