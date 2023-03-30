@@ -33,9 +33,17 @@ async def main(message, message_text, numeration_command):
 				))
 			)
 
-		await message.reply("<a href=\"{}\"><b>></b></a> {}".format(
+		output = "<a href=\"{}\"><b>></b></a> {}".format(
 			await user.get_link_user(user_object["username"], user_object["id"]),
 			await numberDecoder.space_decoder(user_balance)
-		), parse_mode="HTML", disable_web_page_preview=True, reply_markup=reply_markup)
+		)
+
+		if "reply_to_message" in message:
+			try:
+				await message.reply_to_message.reply(output, parse_mode="HTML", disable_web_page_preview=True)
+			except Exception as exception:
+				await message.reply(output, parse_mode="HTML", disable_web_page_preview=True, reply_markup=reply_markup);return exception
+		else:
+			await message.reply(output, parse_mode="HTML", disable_web_page_preview=True, reply_markup=reply_markup)
 	else:
 		await error.send_errors(message, usage)

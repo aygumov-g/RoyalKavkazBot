@@ -1,4 +1,4 @@
-from systems.private.commands import bonus
+from systems.private.commands import bonus, my_bot_stops
 from systems.private import buttons
 
 from cogs import user, slicer
@@ -30,3 +30,5 @@ async def send(message):
 		), parse_mode="HTML", disable_web_page_preview=True, reply_markup=buttons.main)
 	elif message_text_list[1] == buttons.BUTTONS["bonus"]:
 		await bonus.send(message)
+	elif message_text_list[1] == buttons.BUTTONS["my_bot_stops"]:
+		await my_bot_stops.send(message)
