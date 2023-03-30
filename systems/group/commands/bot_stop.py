@@ -94,7 +94,7 @@ async def main(message, message_text, numeration_command, command_text):
 					config.BOT_LINK, buttons.BUTTONS["my_bot_stops"]
 				)
 			else:
-				output = "❗️У тебя нет ни одного запрета"
+				output = "❗️ Ты ещё никому не запрещал отвечать на свои сообщения"
 		
 		elif "-" in command_text and user_object is not None and message.from_user.id in collection.bot_stop_db and user_object["id"] in collection.bot_stop_db[message.from_user.id]["stop"]:  # хочет снять запрет
 			output = "🟢 <a href=\"{}\">{}</a> снова может отвечать на твои сообщения".format(
@@ -122,7 +122,7 @@ async def main(message, message_text, numeration_command, command_text):
 						config.BOT_LINK, buttons.BUTTONS["my_bot_stops"]
 					)
 			else:
-				output = "❗️У тебя нет ни одного запрета"
+				output = "❗️Ты ещё никому не запрещал отвечать на твои сообщения"
 
 		elif ("reply_to_message" in message) or (len(usage[1]["args"]) != 0 and not str(usage[1]["args"][0]).isdigit()):  # если не было запрета отвечать на свои сообщения
 			output = "❗️Ты не запрещал этому пользователю отвечать на свои сообщения"
