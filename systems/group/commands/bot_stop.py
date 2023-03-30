@@ -1,5 +1,7 @@
 from cogs import error, user, collection, word
 
+from cogs import timeDecoder
+
 from systems.private import buttons
 
 import datetime, config
@@ -10,8 +12,8 @@ async def checker_protection(user_id):
 
 	try:
 		user_object = await user.get_object_user(user_id)
-
-		if datetime.datetime.strptime(user_object["bs"], "%Y-%m-%d %H:%M:%S.%f") > datetime.datetime.now():
+	
+		if await timeDecoder.get_time_is_str(user_object["bs"]) > datetime.datetime.now():
 			output = False
 		else:
 			del user_object["bs"]
@@ -22,7 +24,7 @@ async def checker_protection(user_id):
 
 
 async def checker_reply_stop(message):
-	if "reply_to_message" in message and message.reply_to_message.from_user.id in collection.bot_stop_db and message.from_user.id in collection.bot_stop_db[message.reply_to_message.from_user.id]["stop"] and await checker_protection(message.reply_to_message.from_user.id) is True:
+	if "reply_to_message" in message and message.from_user.id in collection.bot_stop_db and message.reply_to_message.from_user.id in collection.bot_stop_db[message.from_user.id]["stop"] and await checker_protection(message.reply_to_message.from_user.id) is True:
 		try:
 			await message.delete()
 		except Exception as exception:
