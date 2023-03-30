@@ -1,8 +1,11 @@
-from cogs import error, user, collection
+import datetime
+
+from cogs import error, user
 from cogs import timeDecoder
 
 
-limit_trans_money_in_day = 10000
+limit_trans_time = ["20", "часов"]
+limit_trans_money = 10000
 
 
 async def main(message, message_text, numeration_command):
@@ -33,16 +36,21 @@ async def main(message, message_text, numeration_command):
 		if user_object_reply is not None and len(usage[1]["args"]) != 0 and int(usage[1]["args"][0]) <= 0:
 			await message.reply("🚫 Такие переводы не принимаются")
 		elif user_object_reply is not None and len(usage[1]["args"]) != 0 and int(user_object["b"]) >= int(usage[1]["args"][0]):
-			if int(user_object["trans"][0]) < limit_trans_money_in_day:
+			if not "trans" in user_object:  # если пользователь никогда не делал переводы, добавляем инфу о его переводах
+				user_object["trans"] = [
+					str(0), str(datetime.datetime.now())
+				]
+
+			if int(user_object["trans"][0]) < limit_trans_money:
 				await message.reply("✅ Пользователю успешно начислены монеты")
 
 				user_object["trans"][0] = str(int(user_object["trans"][0]) + int(usage[1]["args"][0]))
-				user_object["trans"][1] = str(await timeDecoder.decoder(["1", "день"]))
+				user_object["trans"][1] = str(await timeDecoder.decoder(limit_trans_time))
 
-				user_object["b"] = str(int(collection.users_db[message.from_user.id]["b"]) - int(usage[1]["args"][0]))
+				user_object["b"] = str(int(user_object["b"]) - int(usage[1]["args"][0]))
 				user_object_reply["b"] = str(int(user_object_reply["b"]) + int(usage[1]["args"][0]))
 			else:
-				await message.reply("🚫 Лимит на количество переведённых монет за сутки истрачен. ({})".format(
+				await message.reply("🚫 Лимит на количество переведённых монет истрачен. ({})".format(
 					await timeDecoder.decodate(user_object["trans"][1])
 				))
 		elif user_object_reply is not None and len(usage[1]["args"]) != 0:
