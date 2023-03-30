@@ -19,7 +19,7 @@ async def send(message):
 			).replace(
 				"%pref%", str(pref)
 			).replace(
-				"%userLink%", await user.get_link_user(user_object["first_name"], user_object["username"])
+				"%userLink%", await user.get_link_user(user_object["username"], user_object["id"])
 			).replace(
 				"%userName%", await slicer.slicer(
 					await user.get_name_user(user_object["first_name"], user_object["username"], user_object["id"]), 20

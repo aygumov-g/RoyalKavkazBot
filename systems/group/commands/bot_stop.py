@@ -82,7 +82,7 @@ async def main(message, message_text, numeration_command, command_text):
 			if "-" in command_text and message.from_user.id in collection.bot_stop_db:  # хочет снять все свои запреты
 				len_user_bot_stop = len(collection.bot_stop_db[message.from_user.id]["stop"])
 
-				output = "✅ Освобождено: {} {}".format(
+				output = "🟢 Освобождено: {} {}".format(
 					len_user_bot_stop, await word.ending(
 						"пользователь|пользователя|пользователей", len_user_bot_stop
 					)
@@ -114,7 +114,7 @@ async def main(message, message_text, numeration_command, command_text):
 					if len(collection.bot_stop_db[message.from_user.id]["stop"]) == 0:
 						del collection.bot_stop_db[message.from_user.id]
 
-					output = "✅ Запрет на «бот стоп» под номер ({}) удалён".format(
+					output = "🟢 Запрет на «бот стоп» под номер ({}) удалён".format(
 						usage[1]["args"][0]
 					)
 				else:
