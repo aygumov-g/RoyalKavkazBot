@@ -1,4 +1,4 @@
-from cogs import error, user, collection, word
+from cogs import error, user, collection, word 
 
 from cogs import timeDecoder
 
