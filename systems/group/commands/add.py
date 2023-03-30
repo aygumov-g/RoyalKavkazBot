@@ -37,13 +37,13 @@ async def main(message, message_text, numeration_command):
 		params["user"] = True
 	
 	usage = await error.check_errors(message, message_text, params)
-	
+
 	if usage[0] == 1:
 		if len(usage[1]["users"]) != 0:
 			user_object_reply = usage[1]["users"][0]
 		else:
 			user_object_reply = await user.get_object_user(message.reply_to_message.from_user.id)
-		
+
 		output = "❓Сколько"
 		if len(usage[1]["args"]) != 0:
 			user_object_reply["b"] = str(int(user_object_reply["b"]) + int(usage[1]["args"][0]))

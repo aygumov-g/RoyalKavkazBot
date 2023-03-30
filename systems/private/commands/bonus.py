@@ -15,7 +15,7 @@ async def send(message):
 	user_object, output = await user.get_object_user(message.from_user.id), ""
 
 	if int(user_object["b"]) <= 0:
-		if datetime.datetime.strptime(user_object["bonus"], "%Y-%m-%d %H:%M:%S.%f") < datetime.datetime.now():
+		if await timeDecoder.get_time_is_str(user_object["bonus"]) < datetime.datetime.now():
 			member = await bot.get_chat_member(chat_id=config.CHANNEL_NEWS, user_id=message.from_user.id)
 	
 			if member["status"] != "left":
